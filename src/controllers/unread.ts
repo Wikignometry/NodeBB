@@ -60,14 +60,19 @@ interface UserSettings {
   usePagination: boolean;
 }
 
-const relative_path:string = nconf.get('relative_path');
+// The next line calls a function in a module that has not been updated to TS yet
+// eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment
+const relative_path : string = nconf.get('relative_path');
 
-export async function get (req: Request & { uid: number }, res: Response): Promise<void>{
+export async function get(req: Request & { uid: number }, res: Response): Promise<void> {
     const { cid } = req.query;
     const filter: string = req.query.filter || '';
 
-    const [categoryData, userSettings, isPrivileged]:[CategoryData, any, any] = await Promise.all([
+    // The next line calls a function in a module that has not been updated to TS yet
+    // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment
+    const [categoryData, userSettings, isPrivileged]:[CategoryData, UserSettings, boolean] = await Promise.all([
         helpers.getSelectedCategory(cid),
+        // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
         user.getSettings(req.uid),
         user.isPrivileged(req.uid),
     ]);
@@ -75,6 +80,8 @@ export async function get (req: Request & { uid: number }, res: Response): Promi
     const page : number = parseInt(req.query.page, 10) || 1;
     const start : number = Math.max(0, (page - 1) * userSettings.topicsPerPage);
     const stop : number = start + userSettings.topicsPerPage - 1;
+    // The next line calls a function in a module that has not been updated to TS yet
+    // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const data : UnreadData = await topics.getUnreadTopics({
         cid: cid,
         uid: req.uid,
@@ -88,6 +95,8 @@ export async function get (req: Request & { uid: number }, res: Response): Promi
     const baseUrl = isDisplayedAsHome ? '' : 'unread';
 
     if (isDisplayedAsHome) {
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         data.title = meta.config.homePageTitle || '[[pages:home]]';
     } else {
         data.title = '[[pages:unread]]';
@@ -119,9 +128,11 @@ export async function get (req: Request & { uid: number }, res: Response): Promi
 export async function unreadTotal(req: Request, res: Response, next: NextFunction) {
     const filter = req.query.filter || '';
     try {
-        const unreadCount = await topics.getTotalUnread(req.uid, filter);
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        const unreadCount: number = await topics.getTotalUnread(req.uid, filter);
         res.json(unreadCount);
     } catch (err) {
         next(err);
     }
-  };
+}

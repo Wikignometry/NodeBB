@@ -20,19 +20,26 @@ const pagination_1 = __importDefault(require("../pagination"));
 const user_1 = __importDefault(require("../user"));
 const topics_1 = __importDefault(require("../topics"));
 const helpers_1 = __importDefault(require("./helpers"));
+// The next line calls a function in a module that has not been updated to TS yet
+// eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment
 const relative_path = nconf_1.default.get('relative_path');
 function get(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { cid } = req.query;
         const filter = req.query.filter || '';
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment
         const [categoryData, userSettings, isPrivileged] = yield Promise.all([
             helpers_1.default.getSelectedCategory(cid),
+            // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
             user_1.default.getSettings(req.uid),
             user_1.default.isPrivileged(req.uid),
         ]);
         const page = parseInt(req.query.page, 10) || 1;
         const start = Math.max(0, (page - 1) * userSettings.topicsPerPage);
         const stop = start + userSettings.topicsPerPage - 1;
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         const data = yield topics_1.default.getUnreadTopics({
             cid: cid,
             uid: req.uid,
@@ -44,6 +51,8 @@ function get(req, res) {
         const isDisplayedAsHome = !(req.originalUrl.startsWith(`${relative_path}/api/unread`) || req.originalUrl.startsWith(`${relative_path}/unread`));
         const baseUrl = isDisplayedAsHome ? '' : 'unread';
         if (isDisplayedAsHome) {
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             data.title = meta_1.default.config.homePageTitle || '[[pages:home]]';
         }
         else {
@@ -75,6 +84,8 @@ function unreadTotal(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const filter = req.query.filter || '';
         try {
+            // The next line calls a function in a module that has not been updated to TS yet
+            // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
             const unreadCount = yield topics_1.default.getTotalUnread(req.uid, filter);
             res.json(unreadCount);
         }
@@ -84,4 +95,3 @@ function unreadTotal(req, res, next) {
     });
 }
 exports.unreadTotal = unreadTotal;
-;
